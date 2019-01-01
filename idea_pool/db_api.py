@@ -1,8 +1,7 @@
 import sqlite3
-from flask import g
+from flask import g, current_app
 
-DATABASE = '../idea-pool.db'
-def init_db(app):
+def migrate_db(app):
     with app.app_context():
         db = get_db()
         with app.open_resource('../schema.sql', mode='r') as f:
@@ -16,9 +15,10 @@ def dict_factory(cursor, row):
     return d
 
 def get_db():
+    db_uri = current_app.config['DB_URI']
     db = getattr(g, '_database', None)
     if db is None:
-        db = g._database = sqlite3.connect(DATABASE)
+        db = g._database = sqlite3.connect(db_uri)
     db.row_factory = dict_factory
     return db
 
@@ -33,7 +33,7 @@ def query(query, args=(), one=False):
     cur.close()
     return (rv[0] if rv else None) if one else rv
 
-def execute(query,args):
+def execute(query,args=()):
     conn = get_db()
     cur = conn.cursor()
     cur.execute(query,args)

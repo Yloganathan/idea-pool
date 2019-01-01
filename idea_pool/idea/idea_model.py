@@ -14,18 +14,22 @@ class Idea:
 
     @staticmethod
     def get_by_user(email):
-        return query('select id, content, impact, ease, confidence, average_score, created_at from ideas where email = ?', [email])
+        return query('select id, content, impact, ease, confidence, average_score, created_at from ideas where email = ? ORDER BY average_score DESC', [email])
     
+    @staticmethod
+    def get_by_id(id):
+        return query('select id, content, impact, ease, confidence, average_score, created_at from ideas where id = ?', [id], one=True)
+
     @staticmethod
     def create(idea):   
         execute('INSERT INTO ideas (id, content, impact, ease, confidence, average_score, created_at, email) VALUES (?,?,?,?,?,?,?,?)',
                                 (idea.id, idea.content, idea.impact, idea.ease, idea.confidence, idea.average_score, idea.created_at, idea.email))
-        return query('select * from ideas where id = ?',[idea.id], one=True)
+        return Idea.get_by_id(idea.id)
     
     @staticmethod
     def update(idea):
         execute('UPDATE ideas set content = ?, impact = ?, ease = ?, confidence=?, average_score=? where id = ?',(idea.content, idea.impact, idea.ease, idea.confidence, idea.average_score, idea.id))
-        return query('select * from ideas where id = ?',[idea.id], one=True)
+        return Idea.get_by_id(idea.id)
     
     @staticmethod
     def delete(id):

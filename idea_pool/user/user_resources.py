@@ -13,7 +13,7 @@ class UserSignup(Resource):
         data = parser.parse_args()
         
         if User.find_by_email(data['email']):
-            return {'message': 'User {} already exists'.format(data['name'])}
+            return {'msg': 'User {} already exists'.format(data['name'])}, 400
         
         new_user = User(
             email = data['email'],
@@ -30,7 +30,7 @@ class UserSignup(Resource):
                 'refresh_token': refresh_token
                 }
         except:
-            return {'message': 'Something went wrong'}, 500
+            return {'msg': 'Something went wrong'}, 500
 
 
 class AccessTokens(Resource):
@@ -44,7 +44,7 @@ class AccessTokens(Resource):
         user = User.find_by_email(data['email'])
 
         if not user:
-            return {'message': 'User {} doesn\'t exist'.format(data['email'])}
+            return {'msg': 'User {} doesn\'t exist'.format(data['email'])}, 400
         
         if safe_str_cmp(user['password'], data['password'].encode('utf-8')):
             access_token = create_access_token(identity = data['email'])
@@ -54,7 +54,7 @@ class AccessTokens(Resource):
                 'refresh_token': refresh_token
                 }
         else:
-            return {'message': 'Wrong credentials'}
+            return {'msg': 'Wrong credentials'}, 400
 
     @jwt_required
     def delete(self):

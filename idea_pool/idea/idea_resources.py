@@ -6,9 +6,9 @@ import secrets
 class Ideas(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('content', help = 'content field cannot be blank', required = True)
-    parser.add_argument('impact', help = 'impact field cannot be blank', required = True)
-    parser.add_argument('ease', help = 'ease field cannot be blank', required = True)
-    parser.add_argument('confidence', help = 'confidence field cannot be blank', required = True)
+    parser.add_argument('impact', help = 'impact field cannot be blank', type=int, required = True)
+    parser.add_argument('ease', help = 'ease field cannot be blank', type=int, required = True)
+    parser.add_argument('confidence', help = 'confidence field cannot be blank', type=int, required = True)
 
     @jwt_required
     def get(self):
@@ -22,10 +22,7 @@ class Ideas(Resource):
         new_idea = Idea(
             email = current_user,
             id = secrets.token_hex(9),
-            content = data['content'],
-            impact = int(data['impact']),
-            ease = int(data['ease']),
-            confidence = int(data['confidence'])
+            **data
         )
 
         return Idea.create(new_idea)
@@ -33,15 +30,21 @@ class Ideas(Resource):
     @jwt_required
     def put(self, idea_id):
         data = Ideas.parser.parse_args()
-        update_idea = Idea(
-            id = idea_id,
-            content = data['content'],
-            impact = int(data['impact']),
-            ease = int(data['ease']),
-            confidence = int(data['confidence'])
-        )
+
+        idea = Idea.get_by_id(idea_id)
+
+        if not idea:
+            return {'msg': f'Idea with id {idea_id} doesn\'t exist'}, 400
+        
+        update_idea = Idea( idea_id, **data)
+
         return Idea.update(update_idea)
 
     @jwt_required
     def delete(self, idea_id):
+        idea = Idea.get_by_id(idea_id)
+
+        if not idea:
+            return {'msg': f'Idea with id {idea_id} doesn\'t exist'}, 400
+
         return Idea.delete(idea_id)
