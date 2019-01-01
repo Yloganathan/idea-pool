@@ -2,7 +2,7 @@ import json
 import pytest
 
 def test_create_idea(client, current_user):
-    r = client.post('/ideas',  headers={'Authorization': 'Bearer '+current_user['jwt']}, 
+    r = client.post('/ideas',  headers={'x-access-token': current_user['jwt']}, 
                 json= {
                     "content": "tuser1111nt",
                     "impact": 3,
@@ -23,7 +23,7 @@ invalid_idea = [
 
 @pytest.mark.parametrize('data, status_code', invalid_idea)
 def test_create_idea_400(client, current_user, data, status_code):
-    r = client.post('/users', headers={'Authorization': 'Bearer '+current_user['jwt']}, json=data)
+    r = client.post('/users', headers={'x-access-token': current_user['jwt']}, json=data)
     assert r.status_code == status_code
 
 def test_create_idea_401(client):
@@ -37,7 +37,7 @@ def test_create_idea_401(client):
     assert r.status_code == 401
 
 def test_update_idea(client, current_user):
-    r = client.post('/ideas',  headers={'Authorization': 'Bearer '+current_user['jwt']}, 
+    r = client.post('/ideas',  headers={'x-access-token': current_user['jwt']}, 
                 json= {
                     "content": "tuser1111nt",
                     "impact": 3,
@@ -47,7 +47,7 @@ def test_update_idea(client, current_user):
     data = json.loads(r.data)
     assert r.status_code == 200
     id = data['id']
-    r = client.put(f'/ideas/{id}',  headers={'Authorization': 'Bearer '+current_user['jwt']}, 
+    r = client.put(f'/ideas/{id}',  headers={'x-access-token': current_user['jwt']}, 
                 json= {
                     "content": "changed_value",
                     "impact": 8,
@@ -62,7 +62,7 @@ def test_update_idea(client, current_user):
 
 
 def test_update_idea_400(client, current_user):
-    r = client.put(f'/ideas/somerandomid',  headers={'Authorization': 'Bearer '+current_user['jwt']}, 
+    r = client.put(f'/ideas/somerandomid',  headers={'x-access-token': current_user['jwt']}, 
                 json= {
                     "content": "changed_value",
                     "impact": 8,
@@ -83,7 +83,7 @@ def test_update_idea_401(client, current_user):
     assert r.status_code == 401
 
 def test_delete_idea(client, current_user):
-    r = client.post('/ideas',  headers={'Authorization': 'Bearer '+current_user['jwt']}, 
+    r = client.post('/ideas',  headers={'x-access-token': current_user['jwt']}, 
                 json= {
                     "content": "tobedeleted",
                     "impact": 3,
@@ -93,11 +93,11 @@ def test_delete_idea(client, current_user):
     data = json.loads(r.data)
     assert r.status_code == 200
     id = data['id']
-    r = client.delete(f'/ideas/{id}',  headers={'Authorization': 'Bearer '+current_user['jwt']})
+    r = client.delete(f'/ideas/{id}',  headers={'x-access-token': current_user['jwt']})
     assert r.status_code == 204
 
 def test_delete_idea_400(client, current_user):
-    r = client.delete(f'/ideas/somerandomid',  headers={'Authorization': 'Bearer '+current_user['jwt']})
+    r = client.delete(f'/ideas/somerandomid',  headers={'x-access-token': current_user['jwt']})
     assert r.status_code == 400
 
 def test_delete_idea_401(client, current_user):

@@ -47,7 +47,7 @@ def test_current_user_no_auth(client):
     assert r.status_code == 401
 
 def test_current_user(client, current_user):
-    r = client.get('/me', headers={'Authorization': 'Bearer '+current_user['jwt']}
+    r = client.get('/me', headers={'x-access-token': current_user['jwt']}
                            )
     assert r.status_code ==  200
     data = json.loads(r.data)
@@ -61,8 +61,7 @@ def test_refresh_token_no_auth(client):
     assert r.status_code == 401
 
 def test_refresh_token(client, current_user):
-    r = client.post('/access-tokens/refresh', headers={'Authorization': 'Bearer '+current_user['refresh_token']}
-                           )
+    r = client.post('/access-tokens/refresh', headers={'x-access-token': current_user['refresh_token']})
     assert r.status_code ==  200
     data = json.loads(r.data)
     assert data['jwt'] is not None
@@ -74,10 +73,10 @@ def test_user_logout(client):
 
 
 def test_user_logout(client, current_user):
-    r = client.delete('/access-tokens', headers={'Authorization': 'Bearer '+current_user['jwt']}
+    r = client.delete('/access-tokens', headers={'x-access-token': current_user['jwt']}
                            )
     assert r.status_code == 204
-    r = client.get('/me', headers={'Authorization': 'Bearer '+current_user['jwt']}
+    r = client.get('/me', headers={'x-access-token': current_user['jwt']}
                            )
     assert r.status_code == 401
     data = json.loads(r.data)
