@@ -1,1 +1,1 @@
-web: gunicorn --config wsgi.config "idea_pool:create_app('config.DevelopmentConfig')"
+web: gunicorn "idea_pool:create_app('config.DevelopmentConfig')"
