@@ -1,1 +1,1 @@
-web: gunicorn "idea_pool:create_app('config.DevelopmentConfig')"
+web: gunicorn "idea_pool:create_app('config.Config')"
