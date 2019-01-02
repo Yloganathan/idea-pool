@@ -109,6 +109,6 @@ def test_delete_idea_400(client, current_user):
     r = client.delete(f'/ideas/somerandomid',  headers={'x-access-token': current_user['jwt']})
     assert r.status_code == 400
 
-def test_delete_idea_401(client, current_user):
+def test_delete_idea_401(client):
     r = client.delete(f'/ideas/somerandomid')
     assert r.status_code == 401

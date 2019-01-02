@@ -7,9 +7,9 @@ import secrets
 class Ideas(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('content', help = 'content field cannot be blank', required = True)
-    parser.add_argument('impact', help = 'impact field cannot be blank', type=int, required = True, choices=(1,2,3,4,5,6,7,8,9,10))
-    parser.add_argument('ease', help = 'ease field cannot be blank', type=int, required = True, choices=(1,2,3,4,5,6,7,8,9,10))
-    parser.add_argument('confidence', help = 'confidence field cannot be blank', type=int, required = True, choices=(1,2,3,4,5,6,7,8,9,10))
+    parser.add_argument('impact', help = 'impact field should be valid number between 1 and 10', type=int, required = True, choices=(1,2,3,4,5,6,7,8,9,10))
+    parser.add_argument('ease', help = 'ease field should be valid number between 1 and 10', type=int, required = True, choices=(1,2,3,4,5,6,7,8,9,10))
+    parser.add_argument('confidence', help = 'confidence field should be valid number between 1 and 10', type=int, required = True, choices=(1,2,3,4,5,6,7,8,9,10))
     
     @jwt_required
     def get(self):
