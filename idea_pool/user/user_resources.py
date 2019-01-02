@@ -1,3 +1,4 @@
+import re
 from flask_restful import Resource, reqparse
 from .user_model import User
 from flask_jwt_extended import (create_access_token, create_refresh_token, jwt_required, jwt_refresh_token_required, get_jwt_identity, get_raw_jwt)
@@ -11,10 +12,19 @@ class UserSignup(Resource):
         parser.add_argument('password', help = 'Password field cannot be blank', required = True)
 
         data = parser.parse_args()
-        
+
+        if not re.match(r"(^[a-zA-Z0-9_.+-]+@[a-zA-Z0-9-]+\.[a-zA-Z0-9-.]+$)", data['email']): 
+            return {'msg': 'Invalid email'}, 400  
+
         if User.find_by_email(data['email']):
             return {'msg': 'User {} already exists'.format(data['name'])}, 400
-        
+
+        if len(data['password']) < 8:
+            return {'msg': 'Password should be minumum of 8 char'}, 400
+
+        if re.match(r"^([^0-9]*|[^A-Z]*|[^a-z]*)$", data['password']):
+            return {'msg': 'Password should include atleast 1 uppercase letter, 1 lowercase letter, and 1 number'}, 400
+
         new_user = User(
             email = data['email'],
             name = data['name'],

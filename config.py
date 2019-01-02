@@ -7,6 +7,7 @@ class Config:
     JWT_BLACKLIST_ENABLED = os.environ.get('JWT_BLACKLIST_ENABLED') or True
     JWT_BLACKLIST_TOKEN_CHECKS =  ['access', 'refresh']
     JWT_TOKEN_LOCATION = ['headers', 'json']
+    JWT_JSON_KEY = 'access_token'
     JWT_REFRESH_JSON_KEY = 'refresh_token'
     JWT_HEADER_NAME = 'x-access-token'
     JWT_HEADER_TYPE = ''

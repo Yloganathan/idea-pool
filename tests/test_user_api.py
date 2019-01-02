@@ -5,7 +5,7 @@ def test_user_signup(client):
     r = client.post('/users', json= {
                 "email": "user2@gmail.com",
                 "name":"testuser2",
-                "password": "abcxyz"
+                "password": "AAb1cdftr"
                 })
     data = json.loads(r.data)
     assert r.status_code == 200
@@ -16,7 +16,12 @@ invalid_signup = [
     ({}, 400),
     ({"email": "some", "password":"pass"}, 400),
     ({"user": "test", "password":"pass"}, 400),
-    ({"user": "test", "email":"some"}, 400)
+    ({"user": "test", "email":"some"}, 400),
+    ({"user": "test", "email":"some@domain.com", "password":"password"}, 400),
+    ({"user": "test", "email":"some@domain.com", "password": "1Ac3d"}, 400),
+    ({"user": "test", "email":"some@domain.com", "password": "1dffdc3d"}, 400),
+    ({"user": "test", "email":"some@domain.com", "password": "AA122AAAA"}, 400),
+    ({"user": "test", "email":"some@domain,com", "password": "AAb1cdftr"}, 400),
 ]
 
 @pytest.mark.parametrize('data, status_code', invalid_signup)

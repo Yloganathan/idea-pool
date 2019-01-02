@@ -1,10 +1,12 @@
 import json
 import pytest
+import random
+import string
 
 def test_create_idea(client, current_user):
     r = client.post('/ideas',  headers={'x-access-token': current_user['jwt']}, 
                 json= {
-                    "content": "tuser1111nt",
+                    "content": long_string,
                     "impact": 3,
                     "ease": 5,
                     "confidence": 6
@@ -12,18 +14,25 @@ def test_create_idea(client, current_user):
     data = json.loads(r.data)
     assert r.status_code == 200
     assert data['id'] is not None
-    assert data['content'] == "tuser1111nt"
+    assert data['content'] == long_string
+
+long_string = ''.join(random.choices(string.ascii_uppercase + string.digits, k=255))
 
 invalid_idea = [
     ({}, 400),
     ({"content": "somecontent", "impact":9}, 400),
     ({"impact": "nonumber", "confidence":10}, 400),
-    ({"content": "test", "impact":4, "ease": 5 }, 400)
+    ({"content": "test", "impact":4, "ease": 5 }, 400),
+    ({"content": "test", "impact":14, "ease": 5, "confidence":10 }, 400),
+    ({"content": "test", "impact":4, "ease": 25, "confidence":10 }, 400),
+    ({"content": "test", "impact":4, "ease": 5, "confidence":11 }, 400),
+    ({"content": long_string+'1', "impact":4, "ease": 5, "confidence":7 }, 400),
+    ({"content": "", "impact":4, "ease": 5, "confidence":7 }, 400),
 ]
 
 @pytest.mark.parametrize('data, status_code', invalid_idea)
 def test_create_idea_400(client, current_user, data, status_code):
-    r = client.post('/users', headers={'x-access-token': current_user['jwt']}, json=data)
+    r = client.post('/ideas', headers={'x-access-token': current_user['jwt']}, json=data)
     assert r.status_code == status_code
 
 def test_create_idea_401(client):

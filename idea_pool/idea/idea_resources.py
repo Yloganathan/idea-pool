@@ -7,9 +7,9 @@ import secrets
 class Ideas(Resource):
     parser = reqparse.RequestParser()
     parser.add_argument('content', help = 'content field cannot be blank', required = True)
-    parser.add_argument('impact', help = 'impact field cannot be blank', type=int, required = True)
-    parser.add_argument('ease', help = 'ease field cannot be blank', type=int, required = True)
-    parser.add_argument('confidence', help = 'confidence field cannot be blank', type=int, required = True)
+    parser.add_argument('impact', help = 'impact field cannot be blank', type=int, required = True, choices=(1,2,3,4,5,6,7,8,9,10))
+    parser.add_argument('ease', help = 'ease field cannot be blank', type=int, required = True, choices=(1,2,3,4,5,6,7,8,9,10))
+    parser.add_argument('confidence', help = 'confidence field cannot be blank', type=int, required = True, choices=(1,2,3,4,5,6,7,8,9,10))
     
     @jwt_required
     def get(self):
@@ -38,6 +38,10 @@ class Ideas(Resource):
     def post(self):
         current_user = get_jwt_identity()
         data = Ideas.parser.parse_args()
+
+        if len(data['content']) > 255 or len(data['content']) < 1:
+            return {'msg': 'content should be between 1 to 255 char'}, 400
+
         new_idea = Idea(
             email = current_user,
             id = secrets.token_hex(9),
@@ -54,6 +58,9 @@ class Ideas(Resource):
 
         if not idea:
             return {'msg': f'Idea with id {idea_id} doesn\'t exist'}, 400
+        
+        if len(data['content']) > 255 or len(data['content']) < 1:
+            return {'msg': 'content should be between 1 to 255 char'}, 400
         
         update_idea = Idea( idea_id, **data)
 
