@@ -73,4 +73,5 @@ class Ideas(Resource):
         if not idea:
             return {'msg': f'Idea with id {idea_id} doesn\'t exist'}, 400
 
-        return Idea.delete(idea_id)
+        Idea.delete(idea_id)
+        return {}, 204
