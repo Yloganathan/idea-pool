@@ -66,6 +66,11 @@ def test_refresh_token(client, current_user):
     data = json.loads(r.data)
     assert data['jwt'] is not None
 
+def test_refresh_token_body(client, current_user):
+    r = client.post('/access-tokens/refresh', json={'refresh_token': current_user['refresh_token']})
+    assert r.status_code ==  200
+    data = json.loads(r.data)
+    assert data['jwt'] is not None
 
 def test_user_logout(client):
     r = client.delete('/access-tokens')

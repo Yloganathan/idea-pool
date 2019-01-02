@@ -58,7 +58,6 @@ class AccessTokens(Resource):
 
     @jwt_required
     def delete(self):
-        current_user = get_jwt_identity()
         jti = get_raw_jwt()['jti']
         User.revoke_token(jti)
         return {}, 204
