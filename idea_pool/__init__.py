@@ -5,6 +5,7 @@ from flask_restful import Api
 from idea_pool.db_api import close_connection, migrate_db
 from idea_pool.user import user_resources 
 from idea_pool.idea import idea_resources
+from .info_resource import Info
 
 def create_app(config='config.Config'):
     app = Flask(__name__)
@@ -30,7 +31,7 @@ def add_auth(app):
 
 def add_routes(app):
     api = Api(app)
-    
+    api.add_resource(Info, '/')
     api.add_resource(user_resources.UserSignup, '/users')
     api.add_resource(user_resources.AccessTokens, '/access-tokens')
     api.add_resource(user_resources.RefreshTokens, '/access-tokens/refresh')
