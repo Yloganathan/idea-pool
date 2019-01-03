@@ -34,4 +34,3 @@ class Idea:
     @staticmethod
     def delete(id):
         execute('delete from ideas where id = ?',[id])
-        return {}, 204
