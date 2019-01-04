@@ -1,7 +1,5 @@
 # idea-pool
 
-[Heroku live endpoint](https://yuvas-idea-pool.herokuapp.com)
-
 ## Installation
 
 Install requirements
